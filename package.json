@@ -1,0 +1,177 @@
+{
+  "name": "sql-runner",
+  "displayName": "SQL Runner",
+  "description": "Run SQL queries with code lenses and support for PostgreSQL, MySQL, SQLite",
+  "publisher": "Y.R. AMAN",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:sql"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "sql-runner.runQuery",
+        "title": "Run SQL Query"
+      },
+      {
+        "command": "sql-runner.runSelectedQuery",
+        "title": "Run Selected SQL Query"
+      },
+      {
+        "command": "sql-runner.manageConnections",
+        "title": "Manage Database Connections"
+      },
+      {
+        "command": "sql-runner.setActiveConnection",
+        "title": "Set Active SQL Runner Connection"
+      },
+      {
+        "command": "sql-runner.connect",
+        "title": "Connect"
+      },
+      {
+        "command": "sql-runner.disconnect",
+        "title": "Disconnect"
+      },
+      {
+        "command": "sql-runner.commit",
+        "title": "Commit Transaction"
+      },
+      {
+        "command": "sql-runner.rollback",
+        "title": "Rollback Transaction"
+      }
+    ],
+    "configuration": {
+      "title": "SQL Runner",
+      "properties": {
+        "sql-runner.connections": {
+          "type": "array",
+          "default": [],
+          "description": "Saved database connections"
+        },
+        "sql-runner.activeConnection": {
+          "type": "string",
+          "description": "The ID of the active connection to use for running queries."
+        },
+        "sql-runner.defaultQueryLimit": {
+          "type": "number",
+          "default": 100,
+          "description": "Default row limit for SELECT queries without a LIMIT clause. Set to 0 to disable."
+        },
+        "sql-runner.autoCommit": {
+          "type": "string",
+          "default": "auto",
+          "enum": ["auto", "smart", "off"],
+          "enumDescriptions": ["Auto-commit every query.", "Auto-commit SELECT queries, but require manual commit for others.", "No auto-commit. All queries are in a transaction until manually committed."],
+          "description": "Controls the auto-commit behavior for queries."
+        }
+      }
+    },
+    "codeLenses": [
+      {
+        "language": "sql",
+        "command": "sql-runner.runQuery"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "sql-runner.runSelectedQuery",
+          "when": "editorHasSelection && resourceExtname == .sql"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "sql-runner.manageConnections",
+          "when": "view == sqlRunnerConnections",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "sql-runner.connect",
+          "when": "view == sqlRunnerConnections && viewItem == connection",
+          "group": "navigation@1"
+        },
+        {
+          "command": "sql-runner.disconnect",
+          "when": "view == sqlRunnerConnections && viewItem == connection",
+          "group": "navigation@2"
+        },
+        {
+          "command": "sql-runner.commit",
+          "when": "view == sqlRunnerConnections && viewItem == connection",
+          "group": "navigation@3"
+        },
+        {
+          "command": "sql-runner.rollback",
+          "when": "view == sqlRunnerConnections && viewItem == connection",
+          "group": "navigation@3"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "sql-runner-activitybar",
+          "title": "SQL Runner",
+          "icon": "media/extension-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "sql-runner-activitybar": [
+        {
+          "icon": "media/extension-icon.png",
+          "id": "sqlRunnerConnections",
+          "name": "SQL Connections"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run esbuild-base -- --minify",
+    "compile": "npm run esbuild-base -- --sourcemap",
+    "watch": "npm run esbuild-base -- --sourcemap --watch",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "package": "vsce package",
+    "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --external:pg --external:mysql2 --external:sqlite3 --external:table --external:uuid --format=cjs --platform=node",
+    "esbuild": "npm run esbuild-base -- --sourcemap"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "16.x",
+    "@types/pg": "^8.11.6",
+    "@types/sqlite3": "^5.1.0",
+    "@types/uuid": "^9.0.8",
+    "@types/vscode": "^1.74.0",
+    "@typescript-eslint/eslint-plugin": "^5.49.0",
+    "@typescript-eslint/parser": "^5.49.0",
+    "eslint": "^8.34.0",
+    "glob": "^8.1.0",
+    "esbuild": "^0.21.4",
+    "mocha": "^10.2.0",
+    "typescript": "^4.9.5",
+    "vsce": "^2.15.0"
+  },
+  "dependencies": {
+    "mysql2": "^3.9.7",
+    "pg": "^8.11.5",
+    "sqlite3": "^5.1.6",
+    "table": "^6.8.2",
+    "uuid": "^9.0.1"
+  },
+  "overrides": {
+    "undici": "^5.28.0"
+  }
+}
