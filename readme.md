@@ -1,4 +1,4 @@
-SQL Runner for VS Code
+SQL Runner for VS Code  (Currently working on linux os only)
 SQL Runner is a powerful and lightweight VS Code extension designed to let you run SQL queries directly from your editor. It provides a seamless experience for interacting with your databases, featuring an intuitive connection manager, in-editor query execution via CodeLens, and a side-panel for exploring your database schemas.
 
 It currently supports PostgreSQL, MySQL, and SQLite.
@@ -54,3 +54,4 @@ off: No query is auto-committed. All queries are part of a transaction until you
 Enjoy a more integrated SQL experience right inside your favorite editor!
 
 ** The readme is AI generated. **
+
